@@ -650,7 +650,7 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
   .hdr-status{padding:3px 8px;font-size:11px}
   .toast-wrap{inset-inline:var(--s-3);max-width:none}
   .btn{min-height:40px}
-  .input,.select,.textarea{min-height:40px;font-size:16px} /* 16px prevents iOS zoom */
+  .input,.select,.textarea{min-height:40px;font-size:16px}
   .grid-4{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:400px){
@@ -725,6 +725,7 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
     </svg>
   </button>
 </header>
+
 <!-- ═══════════════════════════════════════════════════════════════
      SIDEBAR — التنقل الرئيسي
      ═══════════════════════════════════════════════════════════════ -->
@@ -855,7 +856,7 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
 <div id="modalRoot"></div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     JAVASCRIPT — يبدأ هنا ويستمر حتى نهاية الجزء 5
+     JAVASCRIPT
      ═══════════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
@@ -869,9 +870,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 /**
  * إنشاء عنصر DOM برمجياً (آمن — لا يقبل HTML غير موثوق عبر `text`)
- * @param {string} tag
- * @param {Object} attrs - class, text, html, dataset, style, on*, وغيرها
- * @param {...(Node|string)} children
  */
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -879,7 +877,7 @@ function el(tag, attrs = {}, ...children) {
     if (val == null || val === false) continue;
     if (key === 'class') node.className = val;
     else if (key === 'text') node.textContent = String(val);
-    else if (key === 'html') node.innerHTML = String(val); // ⚠️ trusted content only
+    else if (key === 'html') node.innerHTML = String(val);
     else if (key === 'dataset') Object.assign(node.dataset, val);
     else if (key === 'style' && typeof val === 'object') Object.assign(node.style, val);
     else if (key.startsWith('on') && typeof val === 'function') {
@@ -897,7 +895,6 @@ function el(tag, attrs = {}, ...children) {
   return node;
 }
 
-/** تهريب HTML — يمنع XSS في كل مكان */
 function escapeHtml(str) {
   return String(str ?? '')
     .replace(/&/g, '&amp;')
@@ -907,12 +904,10 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-/** معرّف فريد (base36 + random) */
 function uid(prefix = '') {
   return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 
-/** debounce — تأخير التنفيذ حتى يتوقف المستخدم */
 function debounce(fn, wait = 250) {
   let t;
   const wrapped = (...args) => {
@@ -923,7 +918,6 @@ function debounce(fn, wait = 250) {
   return wrapped;
 }
 
-/** throttle — تنفيذ على الأكثر مرة واحدة كل wait ms */
 function throttle(fn, wait = 200) {
   let last = 0, timer;
   return (...args) => {
@@ -940,7 +934,6 @@ function throttle(fn, wait = 200) {
   };
 }
 
-/** تنزيل ملف عبر Blob (UTF-8) */
 function download(filename, content, mime = 'text/plain;charset=utf-8') {
   try {
     const blob = content instanceof Blob ? content : new Blob([content], { type: mime });
@@ -959,7 +952,6 @@ function download(filename, content, mime = 'text/plain;charset=utf-8') {
   }
 }
 
-/** نسخ نص إلى الحافظة — مع fallback */
 async function copyText(text) {
   try {
     if (navigator.clipboard?.writeText) {
@@ -980,7 +972,6 @@ async function copyText(text) {
   } catch { return false; }
 }
 
-/** تنظيف اسم ملف من الرموز غير المسموحة */
 function sanitizeFilename(name) {
   const base = String(name || 'file')
     .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
@@ -991,7 +982,6 @@ function sanitizeFilename(name) {
   return base;
 }
 
-/** تنسيق تاريخ — يعتمد Intl مع fallback */
 function formatDate(ts, locale) {
   if (!ts) return '—';
   const lang = locale || i18n.current || 'ar';
@@ -1006,7 +996,6 @@ function formatDate(ts, locale) {
   }
 }
 
-/** تاريخ نسبي — "قبل 3 دقائق" */
 function formatRelative(ts, locale) {
   if (!ts) return '—';
   const lang = locale || i18n.current || 'ar';
@@ -1027,7 +1016,6 @@ function formatRelative(ts, locale) {
   return formatDate(ts, lang);
 }
 
-/** امتداد ملف حسب لغة البرمجة */
 function fileExtension(lang) {
   const map = {
     python: 'py', javascript: 'js', typescript: 'ts', html: 'html', css: 'css',
@@ -1038,7 +1026,6 @@ function fileExtension(lang) {
   return map[lang] || 'txt';
 }
 
-/** تظليل نتائج البحث في نص — آمن */
 function highlightMatch(text, query) {
   const safe = escapeHtml(text);
   if (!query || !query.trim()) return safe;
@@ -1049,19 +1036,14 @@ function highlightMatch(text, query) {
   } catch { return safe; }
 }
 
-/** حدّ قيمة بين min و max */
 function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
-
-/** انتظار ms */
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-/** JSON.parse آمن */
 function safeJSON(str, fallback = null) {
   try { return JSON.parse(str); }
   catch { return fallback; }
 }
 
-/** اختصار نص طويل */
 function truncate(str, max = 80) {
   const s = String(str ?? '');
   if (s.length <= max) return s;
@@ -1069,16 +1051,15 @@ function truncate(str, max = 80) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   2. STORAGE — طبقة التخزين (localStorage + fallback + الإصدارات)
+   2. STORAGE — طبقة التخزين
    ═══════════════════════════════════════════════════════════════ */
 
 const Storage = (() => {
   const PREFIX = 'nexsec.v1.';
   const SCHEMA_VERSION = 1;
   let available = true;
-  const memory = {}; // fallback إذا رفض المتصفح localStorage
+  const memory = {};
 
-  // فحص التوفر مرة واحدة
   try {
     const k = '__nexsec_test__';
     localStorage.setItem(k, '1');
@@ -1089,7 +1070,7 @@ const Storage = (() => {
 
   function rawGet(k) {
     if (available) {
-      try { return localStorage.getItem(fullKey(k)); } catch { /* تجاهل */ }
+      try { return localStorage.getItem(fullKey(k)); } catch {}
     }
     return Object.prototype.hasOwnProperty.call(memory, k) ? memory[k] : null;
   }
@@ -1117,7 +1098,6 @@ const Storage = (() => {
     delete memory[k];
   }
 
-  /** استرجاع قيمة — يفكّ مغلّف الإصدار تلقائياً */
   function get(key, fallback = null) {
     const raw = rawGet(key);
     if (raw == null) return fallback;
@@ -1128,7 +1108,6 @@ const Storage = (() => {
     return parsed != null ? parsed : fallback;
   }
 
-  /** حفظ قيمة — يُغلّفها بإصدار */
   function set(key, value) {
     const envelope = { __v: SCHEMA_VERSION, data: value };
     return rawSet(key, JSON.stringify(envelope));
@@ -1136,7 +1115,6 @@ const Storage = (() => {
 
   function remove(key) { rawRemove(key); }
 
-  /** قائمة مفاتيح التطبيق */
   function keys() {
     const out = [];
     if (available) {
@@ -1151,12 +1129,10 @@ const Storage = (() => {
     return Array.from(new Set(out));
   }
 
-  /** مسح كل بيانات التطبيق (ليس مفاتيح متصفح أخرى) */
   function clearAll() {
     for (const k of keys()) rawRemove(k);
   }
 
-  /** تصدير كل شيء إلى كائن قابلة للتنزيل */
   function exportAll() {
     const dump = {
       _app: 'nexsec-ai',
@@ -1170,7 +1146,6 @@ const Storage = (() => {
     return dump;
   }
 
-  /** استيراد كائن مُصدَّر — يتحقق من الصحة */
   function importAll(dump, { merge = false } = {}) {
     if (!dump || typeof dump !== 'object' || dump._app !== 'nexsec-ai') {
       throw new Error('invalid_file');
@@ -1378,7 +1353,7 @@ const I18N = {
     'dashboard.recentReports': 'أحدث التقارير',
     'dashboard.quickStart': 'بدء سريع',
     'dashboard.noRecent': 'لا يوجد بعد',
-    
+
     /* Chat */
     'chat.title': 'المحادثة',
     'chat.new': 'محادثة جديدة',
@@ -1842,7 +1817,6 @@ const i18n = {
     return str;
   },
 
-  /** تطبيق كل ترجمات data-i18n على DOM */
   applyToDOM() {
     $$('[data-i18n]').forEach(node => {
       const key = node.getAttribute('data-i18n');
@@ -1859,14 +1833,12 @@ const i18n = {
     });
   },
 
-  /** تغيير اللغة + تحديث DOM + حفظ + إعادة تحميل الصفحة الحالية */
   async setLang(lang) {
     if (!I18N[lang]) return;
     this.current = lang;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-    // تحديث زر تبديل اللغة
     const langLabel = $('#langLabel');
     if (langLabel) langLabel.textContent = lang === 'ar' ? 'EN' : 'AR';
 
@@ -1874,7 +1846,6 @@ const i18n = {
     saveSettings({ lang });
     State.emit('lang:changed', lang);
 
-    // إعادة تحميل الصفحة الحالية
     Router.refresh();
   },
 
@@ -1883,11 +1854,10 @@ const i18n = {
   }
 };
 
-/** helper قصير */
 const t = (key, params) => i18n.t(key, params);
 
 /* ═══════════════════════════════════════════════════════════════
-   4. SETTINGS — إعدادات المستخدم (محفوظة في Storage)
+   4. SETTINGS
    ═══════════════════════════════════════════════════════════════ */
 
 const DEFAULT_SETTINGS = Object.freeze({
@@ -1905,9 +1875,7 @@ function loadSettings() {
 function saveSettings(partial) {
   const next = { ...loadSettings(), ...partial };
   const ok = Storage.set('settings', next);
-  if (!ok) {
-    showToast(t('error.storageQuota'), 'warn');
-  }
+  if (!ok) showToast(t('error.storageQuota'), 'warn');
   return next;
 }
 
@@ -1916,7 +1884,6 @@ function resetSettings() {
   applySettingsToDOM({ ...DEFAULT_SETTINGS });
 }
 
-/** تطبيق الإعدادات على <html> */
 function applySettingsToDOM(settings) {
   const s = settings || loadSettings();
   document.documentElement.dataset.theme = s.theme || 'dark';
@@ -1928,7 +1895,7 @@ function applySettingsToDOM(settings) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   5. STATE — نظام pub/sub خفيف للأحداث
+   5. STATE
    ═══════════════════════════════════════════════════════════════ */
 
 const State = (() => {
@@ -1955,7 +1922,7 @@ const State = (() => {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   6. TOAST — إشعارات قابلة لإعادة الاستخدام
+   6. TOAST
    ═══════════════════════════════════════════════════════════════ */
 
 const TOAST_ICONS = {
@@ -1964,6 +1931,7 @@ const TOAST_ICONS = {
   err: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
   info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
 };
+
 function showToast(message, type = 'info', duration = 4000) {
   const wrap = $('#toastWrap');
   if (!wrap) return null;
@@ -1989,22 +1957,13 @@ function showToast(message, type = 'info', duration = 4000) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   7. MODAL — نظام نوافذ منبثقة قابل لإعادة الاستخدام
+   7. MODAL
    ═══════════════════════════════════════════════════════════════ */
 
 let _activeModalCleanup = null;
 
-/**
- * فتح نافذة منبثقة.
- * @param {Object} opts
- * @param {string} opts.title
- * @param {HTMLElement|string} opts.content
- * @param {Array<{label:string,class?:string,onClick?:(close:Function)=>void,type?:string}>} opts.actions
- * @param {Function} opts.onClose
- * @returns {Function} close
- */
 function openModal({ title, content, actions = [], onClose } = {}) {
-  closeActiveModal(); // إغلاق أي نافذة سابقة
+  closeActiveModal();
 
   const root = $('#modalRoot');
   const previousFocus = document.activeElement;
@@ -2082,7 +2041,6 @@ function openModal({ title, content, actions = [], onClose } = {}) {
   document.addEventListener('keydown', onKey);
   _activeModalCleanup = close;
 
-  // تركيز أول عنصر تفاعلي
   setTimeout(() => {
     const target = modal.querySelector(
       'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button'
@@ -2097,9 +2055,6 @@ function closeActiveModal() {
   if (_activeModalCleanup) _activeModalCleanup();
 }
 
-/**
- * نافذة تأكيد — Promise<boolean>
- */
 function confirmDialog({ title, message, confirmLabel, cancelLabel, danger = false }) {
   return new Promise(resolve => {
     openModal({
@@ -2122,11 +2077,11 @@ function confirmDialog({ title, message, confirmLabel, cancelLabel, danger = fal
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   8. ROUTER — التوجيه عبر hash (يعمل على GitHub Pages مباشرة)
+   8. ROUTER
    ═══════════════════════════════════════════════════════════════ */
 
 const Router = (() => {
-  const routes = {};      // path -> handler(main, params)
+  const routes = {};
   let currentRoute = null;
   let currentParams = {};
 
@@ -2175,7 +2130,6 @@ const Router = (() => {
 
     updateActiveNav(path);
 
-    // إغلاق الدرج على الجوال عند التنقل
     if (document.body.dataset.drawer === 'open') {
       document.body.dataset.drawer = 'closed';
     }
@@ -2192,13 +2146,10 @@ const Router = (() => {
       return;
     }
 
-    // Scroll للأعلى + إظهار حالة تحميل خفيفة
     window.scrollTo({ top: 0, behavior: 'auto' });
 
     try {
-      // نمرّر main و params للمعالج
       await handler(main, params);
-      // تركيز إمكانية الوصول على الحاوية الرئيسية
       main.focus({ preventScroll: true });
     } catch (err) {
       renderError(main, err);
@@ -2216,7 +2167,6 @@ const Router = (() => {
 
   function start() {
     window.addEventListener('hashchange', () => resolve());
-    // الرابط الأول
     if (!location.hash) {
       history.replaceState(null, '', '#/dashboard');
     }
@@ -2231,15 +2181,13 @@ const Router = (() => {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   9. SIDEBAR / DRAWER / LANGUAGE — ربط أحداث الواجهة الثابتة
+   9. SHELL EVENTS
    ═══════════════════════════════════════════════════════════════ */
 
 function initShellEvents() {
-  // تبديل اللغة
   const langBtn = $('#langToggle');
   if (langBtn) langBtn.addEventListener('click', () => i18n.toggle());
 
-  // طي الشريط الجانبي على سطح المكتب
   const sidebarBtn = $('#sidebarToggle');
   if (sidebarBtn) {
     sidebarBtn.addEventListener('click', () => {
@@ -2250,7 +2198,6 @@ function initShellEvents() {
     });
   }
 
-  // فتح/إغلاق الدرج على الجوال
   const menuBtn = $('#menuToggle');
   if (menuBtn) {
     menuBtn.addEventListener('click', () => {
@@ -2260,7 +2207,6 @@ function initShellEvents() {
     });
   }
 
-  // إغلاق الدرج عند النقر خارجه
   document.addEventListener('click', (e) => {
     if (document.body.dataset.drawer !== 'open') return;
     if (e.target.closest('#appSidebar')) return;
@@ -2269,7 +2215,6 @@ function initShellEvents() {
     if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
   });
 
-  // إغلاق الدرج عند Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.body.dataset.drawer === 'open') {
       document.body.dataset.drawer = 'closed';
@@ -2280,7 +2225,6 @@ function initShellEvents() {
     }
   });
 
-  // تنبيه عند محاولة مغادرة الصفحة مع تغييرات غير محفوظة (سيُفعّل لاحقاً)
   window.addEventListener('beforeunload', (e) => {
     if (State._hasUnsaved) {
       e.preventDefault();
@@ -2288,8 +2232,6 @@ function initShellEvents() {
     }
   });
 }
-
-/* 
 
 /* ═══════════════════════════════════════════════════════════════
    10. DATA — الأدوات الأمنية
@@ -2450,8 +2392,7 @@ const DATA_TOOL_CATEGORIES = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════
-   11. DATA — قاعدة المعرفة (مقالات نموذجية)
-   ملاحظة: هذا محتوى تعليمي محلي، ليس توثيقاً رسمياً لأي جهة خارجية.
+   11. DATA — قاعدة المعرفة
    ═══════════════════════════════════════════════════════════════ */
 
 const DATA_KNOWLEDGE = [
@@ -2561,7 +2502,7 @@ const DATA_KNOWLEDGE_CATEGORIES = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════
-   12. DATA — أمثلة سكربتات (تعليمية فقط — لا تُنفّذ تلقائياً)
+   12. DATA — أمثلة سكربتات
    ═══════════════════════════════════════════════════════════════ */
 
 const DATA_EXAMPLES = [
@@ -2662,35 +2603,9 @@ GRANT SELECT, INSERT ON users TO app_role;
 ];
 
 /* ═══════════════════════════════════════════════════════════════
-   13. SERVICE — AI (معطّل افتراضياً، عقد واضح، لا ردود وهمية)
+   13. SERVICE — AI
    ═══════════════════════════════════════════════════════════════ */
 
-/**
- * عقد خدمة AI (للتكامل المستقبلي):
- *
- * Request:
- *   {
- *     messages: [{ role: 'system'|'user'|'assistant', content: string }],
- *     model?: string,         // مثال: 'gpt-4', 'claude-3', etc.
- *     temperature?: number,   // 0..2
- *     maxTokens?: number,
- *     stream?: boolean,
- *     signal?: AbortSignal
- *   }
- *
- * Response (success):
- *   { ok: true, content: string, model?: string,
- *     usage?: { promptTokens, completionTokens, totalTokens } }
- *
- * Response (error):
- *   { ok: false, error: { code: string, message: string } }
- *
- * Streaming (future):
- *   async iterable of { delta: string } chunks
- *
- * ملاحظة أمنية: المفتاح يجب أن يبقى على خادم خلفي — لا يُخزّن هنا.
- * في v1.0 الخدمة معطّلة بالكامل ولا تُجري أي طلبات شبكة.
- */
 const AIService = (() => {
   const config = {
     enabled: false,
@@ -2707,10 +2622,6 @@ const AIService = (() => {
     return { state: 'disconnected', label: t('status.ai'), reason: 'no_provider_configured' };
   }
 
-  /**
-   * إرسال طلب — في v1.0 يُعيد خطأً صادقاً دائماً.
-   * @returns {Promise<{ok:false, error:{code,message}}>}
-   */
   async function chat(_request) {
     if (!isConnected()) {
       return {
@@ -2721,7 +2632,6 @@ const AIService = (() => {
         }
       };
     }
-    // مستقبلاً: fetch إلى endpoint آمن مع signal/timeout
     return {
       ok: false,
       error: {
@@ -2737,7 +2647,7 @@ const AIService = (() => {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   14. SERVICE — Repository Search (بدون اتصال، يفتح GitHub بأمان)
+   14. SERVICE — Repository Search
    ═══════════════════════════════════════════════════════════════ */
 
 const RepositoryService = (() => {
@@ -2747,10 +2657,6 @@ const RepositoryService = (() => {
     return config.liveSearchEnabled === true;
   }
 
-  /**
-   * بناء رابط بحث GitHub الرسمي — مع ترميز آمن.
-   * لا يُجري أي طلب شبكة — يُعيد رابطاً فقط.
-   */
   function githubSearchUrl(query, language) {
     const params = new URLSearchParams();
     if (query) params.set('q', language ? `${query} language:${language}` : query);
@@ -2759,12 +2665,6 @@ const RepositoryService = (() => {
     return `https://github.com/search?${params.toString()}`;
   }
 
-  /**
-   * البحث في قائمة محلية تم استيرادها.
-   * @param {Array} list
-   * @param {string} query
-   * @param {string} language
-   */
   function searchLocal(list, query, language) {
     if (!Array.isArray(list)) return [];
     const q = (query || '').trim().toLowerCase();
@@ -2780,9 +2680,6 @@ const RepositoryService = (() => {
     });
   }
 
-  /**
-   * بحث حيّ (غير متاح في v1.0) — يُعيد خطأً صادقاً.
-   */
   async function searchLive(_query, _language) {
     if (!isLive()) {
       return {
@@ -2802,13 +2699,10 @@ const RepositoryService = (() => {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   15. SERVICE — Analysis (يدوي فقط، لا تنفيذ، لا مسح وهمي)
+   15. SERVICE — Analysis
    ═══════════════════════════════════════════════════════════════ */
 
 const AnalysisService = (() => {
-  /**
-   * تحليل تلقائي — غير متاح. يُعيد خطأً صادقاً.
-   */
   async function analyze(_code, _lang) {
     return {
       ok: false,
@@ -2819,9 +2713,6 @@ const AnalysisService = (() => {
     };
   }
 
-  /**
-   * فحص أمني — غير متاح. لا يجب تصنيع نتائج أبداً.
-   */
   async function scan(_target) {
     return {
       ok: false,
@@ -2829,9 +2720,6 @@ const AnalysisService = (() => {
     };
   }
 
-  /**
-   * قائمة تحقق مراجعة يدوية (ثابتة، معتمدة).
-   */
   const REVIEW_CHECKLIST = Object.freeze([
     { id: 'rv-1', ar: 'تم التحقق من جميع مدخلات المستخدم (client + server)', en: 'All user inputs validated (client + server)' },
     { id: 'rv-2', ar: 'لا يوجد استخدام لـ eval أو تنفيذ كود ديناميكي', en: 'No eval or dynamic code execution' },
@@ -2847,17 +2735,16 @@ const AnalysisService = (() => {
 
   return { analyze, scan, REVIEW_CHECKLIST };
 })();
+
 /* ═══════════════════════════════════════════════════════════════
-   16. HELPERS — أدوات مساعدة مشتركة بين الوحدات
+   16. HELPERS
    ═══════════════════════════════════════════════════════════════ */
 
-/** قراءة قائمة من التخزين مع قيم افتراضية آمنة */
 function readList(key) {
   const val = Storage.get(key, []);
   return Array.isArray(val) ? val : [];
 }
 
-/** حفظ قائمة مع إطلاق حدث */
 function writeList(key, list) {
   const ok = Storage.set(key, list);
   if (ok) State.emit(`data:${key}:changed`, list);
@@ -2865,7 +2752,6 @@ function writeList(key, list) {
   return ok;
 }
 
-/** أيقونة SVG مساعدة */
 function icon(name, size = 18) {
   const paths = {
     plus: '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
@@ -2898,7 +2784,6 @@ function icon(name, size = 18) {
   return svg;
 }
 
-/** زر أيقوني مع نص (aria-label) */
 function iconBtn(name, label, onClick, cls = 'btn btn-ghost btn-sm btn-icon') {
   const btn = el('button', {
     type: 'button',
@@ -3049,10 +2934,9 @@ function buildRecentCard(titleKey, items, route) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   18. MODULE — Chat (وضع تجريبي، حفظ محلي، لا AI)
+   18. MODULE — Chat
    ═══════════════════════════════════════════════════════════════ */
 
-/** حالة الجلسة (في الذاكرة فقط) */
 const ChatState = {
   activeId: null,
   searchQuery: ''
@@ -3100,13 +2984,11 @@ function deleteConversation(id) {
   }
 }
 
-/** رندر رسالة واحدة */
 function renderMessage(msg, index, convId) {
   const wrap = el('div', {
     class: `chat-msg chat-msg-${msg.role === 'user' ? 'user' : 'system'}`
   });
 
-  // كشف كتل الكود
   const content = msg.content || '';
   const codeRe = /```([\w-]*)\n([\s\S]*?)```/g;
   let lastIndex = 0;
@@ -3139,7 +3021,6 @@ function renderMessage(msg, index, convId) {
     wrap.appendChild(el('div', { text: content.slice(lastIndex), style: { whiteSpace: 'pre-wrap' } }));
   }
 
-  // meta + actions
   const meta = el('div', { class: 'chat-msg-meta' });
   meta.appendChild(el('span', { text: formatRelative(msg.ts || Date.now()) }));
   const actions = el('div', { class: 'chat-msg-actions' });
@@ -3171,7 +3052,6 @@ function renderChat(main) {
 
   const page = el('div', { class: 'page' });
 
-  // Header
   const hdr = el('div', { class: 'page-hdr' });
   const hdrMain = el('div', { class: 'page-hdr__main' });
   hdrMain.appendChild(el('h1', { class: 'page-title', text: t('chat.title') }));
@@ -3190,7 +3070,6 @@ function renderChat(main) {
   hdr.appendChild(actions);
   page.appendChild(hdr);
 
-  // Banner — AI not connected
   const banner = el('div', { class: 'banner banner-warn' });
   banner.innerHTML = TOAST_ICONS.warn;
   const bannerBody = el('div', { style: { flex: 1 } });
@@ -3199,10 +3078,8 @@ function renderChat(main) {
   banner.appendChild(bannerBody);
   page.appendChild(banner);
 
-  // Layout: list + chat area
   const layout = el('div', { class: 'chat-layout' });
 
-  /* ── Sidebar ── */
   const sidebar = el('div', { class: 'chat-sidebar' });
   const searchWrap = el('div', { class: 'search-wrap' });
   searchWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-wrap__icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
@@ -3264,7 +3141,6 @@ function renderChat(main) {
   renderChatList();
   layout.appendChild(sidebar);
 
-  /* ── Main chat area ── */
   const chatMain = el('div', { class: 'stack' });
   const active = conversations.find(c => c.id === ChatState.activeId);
 
@@ -3282,7 +3158,6 @@ function renderChat(main) {
     }, document.createTextNode(t('chat.new'))));
     chatMain.appendChild(empty);
   } else {
-    // Conversation toolbar
     const toolbar = el('div', { class: 'row row-between' });
     const titleWrap = el('div', { style: { flex: 1, minWidth: 0 } });
     titleWrap.appendChild(el('div', { text: active.title, style: { fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }));
@@ -3347,7 +3222,6 @@ function renderChat(main) {
     toolbar.appendChild(toolbarActions);
     chatMain.appendChild(toolbar);
 
-    // Messages
     const msgsBox = el('div', { class: 'chat-msgs', role: 'log', 'aria-live': 'polite' });
     if (!active.messages.length) {
       msgsBox.appendChild(el('div', {
@@ -3363,7 +3237,6 @@ function renderChat(main) {
     }
     chatMain.appendChild(msgsBox);
 
-    // Input area
     const inputWrap = el('div', { class: 'stack stack-sm' });
     const textarea = el('textarea', {
       class: 'textarea',
@@ -3409,7 +3282,6 @@ function renderChat(main) {
     inputWrap.appendChild(inputBar);
     chatMain.appendChild(inputWrap);
 
-    // Clear conversation button
     if (active.messages.length) {
       const clearRow = el('div', { class: 'row row-end' });
       clearRow.appendChild(el('button', {
@@ -3440,16 +3312,7 @@ function renderChat(main) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   REGISTER ROUTES (الجزء 3)
-   ═══════════════════════════════════════════════════════════════ */
-
-Router.register('dashboard', renderDashboard);
-Router.register('chat', renderChat);
-
-/* ══════=
-
-* ═══════════════════════════════════════════════════════════════
-   19. STORAGE HELPERS — للوحدات المشتركة
+   19. STORAGE HELPERS
    ═══════════════════════════════════════════════════════════════ */
 
 function getScripts() { return readList('scripts'); }
@@ -3481,7 +3344,7 @@ function getRepoList() {
 function saveRepoList(list) { return Storage.set('repos.local', list); }
 
 /* ═══════════════════════════════════════════════════════════════
-   20. LANGUAGES — قائمة لغات البرمجة
+   20. LANGUAGES
    ═══════════════════════════════════════════════════════════════ */
 
 const LANGUAGES = [
@@ -3556,7 +3419,6 @@ function renderCodeStudio(main) {
   hdrMain.appendChild(el('div', { class: 'page-sub', text: t('code.subtitle') }));
   hdr.appendChild(hdrMain);
 
-  // Unsaved indicator
   const dirtyBadge = el('span', {
     class: 'badge badge-warn',
     text: t('common.unsaved'),
@@ -3565,7 +3427,6 @@ function renderCodeStudio(main) {
   hdr.appendChild(dirtyBadge);
   page.appendChild(hdr);
 
-  // Warning banner
   const banner = el('div', { class: 'banner banner-info' });
   banner.innerHTML = TOAST_ICONS.info;
   banner.appendChild(el('div', {
@@ -3576,7 +3437,6 @@ function renderCodeStudio(main) {
   }));
   page.appendChild(banner);
 
-  /* ── Meta fields ── */
   const metaCard = el('div', { class: 'card' });
   const metaGrid = el('div', { class: 'grid grid-3' });
 
@@ -3626,7 +3486,6 @@ function renderCodeStudio(main) {
   metaCard.appendChild(metaGrid);
   page.appendChild(metaCard);
 
-  /* ── Editor ── */
   const editorCard = el('div', { class: 'card' });
   const editorHdr = el('div', { class: 'card-hdr' });
   editorHdr.appendChild(el('div', { class: 'card-title', text: t('code.editor') }));
@@ -3659,12 +3518,10 @@ function renderCodeStudio(main) {
     CodeStudioState.code = textarea.value;
     updateCounts();
     markDirty();
-    // auto-save draft (debounced)
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => { saveDraft(); }, 800);
   });
 
-  // Tab key inserts 2 spaces
   textarea.addEventListener('keydown', (e) => {
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -3681,7 +3538,6 @@ function renderCodeStudio(main) {
 
   editorCard.appendChild(textarea);
 
-  // Find row
   const findRow = el('div', { class: 'row', style: { marginTop: 'var(--s-2)' } });
   const findInput = el('input', {
     type: 'search', class: 'input',
@@ -3703,7 +3559,6 @@ function renderCodeStudio(main) {
   findRow.appendChild(findResult);
   editorCard.appendChild(findRow);
 
-  // Action buttons
   const actions = el('div', { class: 'row row-between', style: { marginTop: 'var(--s-3)' } });
   const leftActions = el('div', { class: 'row' });
 
@@ -3802,7 +3657,6 @@ function renderCodeStudio(main) {
 
   page.appendChild(editorCard);
 
-  /* ── Manual Review Checklist ── */
   const reviewCard = el('div', { class: 'card' });
   reviewCard.appendChild(el('div', { class: 'card-title', text: t('code.review') }));
   reviewCard.appendChild(el('div', { class: 'card-sub', text: t('code.reviewManual') }));
@@ -3821,7 +3675,6 @@ function renderCodeStudio(main) {
   reviewCard.appendChild(checklist);
   page.appendChild(reviewCard);
 
-  /* ── Explain panel (disabled) ── */
   const explainCard = el('div', { class: 'card' });
   explainCard.appendChild(el('div', { class: 'card-title', text: t('code.explain') }));
   const explainBanner = el('div', { class: 'banner banner-warn' });
@@ -3856,7 +3709,6 @@ function renderRepositorySearch(main) {
   hdr.appendChild(hdrMain);
   page.appendChild(hdr);
 
-  // Offline banner
   const banner = el('div', { class: 'banner banner-info' });
   banner.innerHTML = TOAST_ICONS.info;
   banner.appendChild(el('div', {
@@ -3865,7 +3717,6 @@ function renderRepositorySearch(main) {
   }));
   page.appendChild(banner);
 
-  // Search toolbar
   const toolbar = el('div', { class: 'toolbar' });
   const searchWrap = el('div', { class: 'search-wrap', style: { flex: 1, minWidth: '200px' } });
   searchWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-wrap__icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
@@ -3904,7 +3755,6 @@ function renderRepositorySearch(main) {
 
   page.appendChild(toolbar);
 
-  // Import row
   const importRow = el('div', { class: 'row' });
   const fileInput = el('input', { type: 'file', accept: '.json,application/json', style: { display: 'none' } });
   fileInput.addEventListener('change', handleImport);
@@ -4003,7 +3853,8 @@ function renderRepositorySearch(main) {
 
   main.appendChild(page);
 }
-* ═══════════════════════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════════════════════
    23. MODULE — Script Library
    ═══════════════════════════════════════════════════════════════ */
 
@@ -4029,13 +3880,11 @@ function renderScriptLibrary(main) {
   }, icon('plus', 14), document.createTextNode(' ' + t('scripts.new'))));
   page.appendChild(hdr);
 
-  // Warning
   const warn = el('div', { class: 'banner banner-warn' });
   warn.innerHTML = TOAST_ICONS.warn;
   warn.appendChild(el('div', { text: t('scripts.warn'), style: { fontSize: 'var(--fs-sm)' } }));
   page.appendChild(warn);
 
-  // Toolbar
   const toolbar = el('div', { class: 'toolbar' });
 
   const searchWrap = el('div', { class: 'search-wrap', style: { flex: 1, minWidth: '180px' } });
@@ -4081,7 +3930,6 @@ function renderScriptLibrary(main) {
     listWrap.innerHTML = '';
     let scripts = getScripts();
 
-    // Filter
     const q = ScriptsState.search.trim().toLowerCase();
     if (q) {
       scripts = scripts.filter(s =>
@@ -4097,7 +3945,6 @@ function renderScriptLibrary(main) {
       scripts = scripts.filter(s => s.favorite);
     }
 
-    // Sort
     scripts.sort((a, b) => {
       if (ScriptsState.sortBy === 'title') return (a.title || '').localeCompare(b.title || '');
       if (ScriptsState.sortBy === 'created') return (b.createdAt || 0) - (a.createdAt || 0);
@@ -4282,7 +4129,7 @@ function openScriptEditor(existing) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   24. MODULE — Security Tools Directory
+   24. MODULE — Security Tools
    ═══════════════════════════════════════════════════════════════ */
 
 const ToolsState = {
@@ -4306,7 +4153,6 @@ function renderTools(main) {
   disclaimer.appendChild(el('div', { text: t('tools.disclaimer'), style: { fontSize: 'var(--fs-sm)' } }));
   page.appendChild(disclaimer);
 
-  // Toolbar
   const toolbar = el('div', { class: 'toolbar' });
   const searchWrap = el('div', { class: 'search-wrap', style: { flex: 1, minWidth: '180px' } });
   searchWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-wrap__icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
@@ -4404,7 +4250,6 @@ function renderTools(main) {
         }));
       }
 
-      // Notes button
       footer.appendChild(el('button', {
         type: 'button', class: 'btn btn-ghost btn-sm',
         onClick: () => openToolNotes(tool)
@@ -4485,7 +4330,6 @@ function renderKnowledge(main) {
   banner.appendChild(el('div', { text: t('knowledge.sample'), style: { fontSize: 'var(--fs-sm)' } }));
   page.appendChild(banner);
 
-  // Toolbar
   const toolbar = el('div', { class: 'toolbar' });
   const searchWrap = el('div', { class: 'search-wrap', style: { flex: 1, minWidth: '180px' } });
   searchWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-wrap__icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
@@ -4612,18 +4456,6 @@ function renderKnowledge(main) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   REGISTER ROUTES (الجزء 4)
-   ═══════════════════════════════════════════════════════════════ */
-
-Router.register('code-studio', renderCodeStudio);
-Router.register('repositories', renderRepositorySearch);
-Router.register('scripts', renderScriptLibrary);
-Router.register('tools', renderTools);
-Router.register('knowledge', renderKnowledge);
-
-/* ════════════════════════════════════════════════════════════════ */
-
-/* ═══════════════════════════════════════════════════════════════
    26. MODULE — Projects
    ═══════════════════════════════════════════════════════════════ */
 
@@ -4655,7 +4487,6 @@ function renderProjects(main) {
   }, icon('plus', 14), document.createTextNode(' ' + t('projects.new'))));
   page.appendChild(hdr);
 
-  // Toolbar
   const toolbar = el('div', { class: 'toolbar' });
   const searchWrap = el('div', { class: 'search-wrap', style: { flex: 1, minWidth: '180px' } });
   searchWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-wrap__icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
@@ -4758,7 +4589,6 @@ function renderProjects(main) {
       card.appendChild(el('div', { class: 'card-sub', text: truncate(project.description, 160) }));
     }
 
-    // Attached scripts count
     const attachedScripts = (project.scriptIds || []).length;
     const meta = el('div', { class: 'row', style: { gap: 'var(--s-2)', flexWrap: 'wrap' } });
     meta.appendChild(el('span', {
@@ -4796,7 +4626,6 @@ function renderProjects(main) {
       if (ok) {
         const list = getProjects().filter(p => p.id !== project.id);
         writeList('projects', list);
-        // Unlink scripts
         const scripts = getScripts().map(s =>
           s.projectId === project.id ? { ...s, projectId: null } : s
         );
@@ -4860,7 +4689,6 @@ function openProjectEditor(existing) {
   notesField.appendChild(notesInput);
   form.appendChild(notesField);
 
-  // Attach scripts (multi-select via checkboxes)
   const scriptsAll = getScripts();
   if (scriptsAll.length) {
     const attachField = el('div', { class: 'field' });
@@ -4913,7 +4741,6 @@ function openProjectEditor(existing) {
           else list[idx] = project;
           writeList('projects', list);
 
-          // Update scripts to reference project
           const scriptsAll = getScripts();
           for (const s of scriptsAll) {
             const shouldAttach = (project.scriptIds || []).includes(s.id);
@@ -5185,12 +5012,10 @@ function openReportEditor(existing) {
   summaryField.appendChild(summaryInput);
   form.appendChild(summaryField);
 
-  // Findings
   const findingsWrap = el('div', { class: 'stack stack-sm' });
   findingsWrap.appendChild(el('div', { class: 'field__lbl', text: t('reports.findings') }));
 
   function renderFindings() {
-    // keep header, remove old items
     while (findingsWrap.children.length > 1) findingsWrap.removeChild(findingsWrap.lastChild);
 
     if (!report.findings.length) {
@@ -5513,7 +5338,6 @@ function renderSettings(main) {
 
   page.appendChild(danger);
 
-  // Version
   const versionRow = el('div', { class: 'row', style: { color: 'var(--text-3)', fontSize: 'var(--fs-xs)', justifyContent: 'center', paddingTop: 'var(--s-4)' } });
   versionRow.textContent = `NexSec AI — ${t('app.version')}`;
   page.appendChild(versionRow);
@@ -5551,7 +5375,6 @@ function renderAbout(main) {
   hdr.appendChild(hdrMain);
   page.appendChild(hdr);
 
-  // Hero
   const hero = el('div', { class: 'hero' });
   const heroLogo = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   heroLogo.setAttribute('viewBox', '0 0 64 64');
@@ -5574,7 +5397,6 @@ function renderAbout(main) {
   hero.appendChild(heroBody);
   page.appendChild(hero);
 
-  // Limitations
   const limCard = el('div', { class: 'card' });
   limCard.appendChild(el('div', { class: 'card-title', text: t('about.limitations') }));
   limCard.appendChild(el('div', { class: 'card-sub', text: t('about.limitationsDesc') }));
@@ -5606,13 +5428,11 @@ function renderAbout(main) {
   limCard.appendChild(limList);
   page.appendChild(limCard);
 
-  // Privacy
   const privCard = el('div', { class: 'card' });
   privCard.appendChild(el('div', { class: 'card-title', text: t('about.privacy') }));
   privCard.appendChild(el('div', { class: 'card-sub', text: t('about.privacyDesc') }));
   page.appendChild(privCard);
 
-  // Stats
   const statsCard = el('div', { class: 'card' });
   statsCard.appendChild(el('div', { class: 'card-title', text: i18n.current === 'ar' ? 'إحصائيات محلية' : 'Local Stats' }));
   const stats = el('div', { class: 'grid grid-4', style: { marginTop: 'var(--s-2)' } });
@@ -5655,6 +5475,17 @@ function renderNotFound(main) {
   main.appendChild(page);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   ROUTER REGISTRATION
+   ═══════════════════════════════════════════════════════════════ */
+
+Router.register('dashboard', renderDashboard);
+Router.register('chat', renderChat);
+Router.register('code-studio', renderCodeStudio);
+Router.register('repositories', renderRepositorySearch);
+Router.register('scripts', renderScriptLibrary);
+Router.register('tools', renderTools);
+Router.register('knowledge', renderKnowledge);
 Router.register('projects', renderProjects);
 Router.register('reports', renderReports);
 Router.register('settings', renderSettings);
@@ -5662,11 +5493,10 @@ Router.register('about', renderAbout);
 Router.register('404', renderNotFound);
 
 /* ═══════════════════════════════════════════════════════════════
-   31. BOOTSTRAP — تشغيل التطبيق
+   31. BOOTSTRAP
    ═══════════════════════════════════════════════════════════════ */
 
 function bootstrap() {
-  // 1. تحميل وتطبيق الإعدادات
   const settings = loadSettings();
   applySettingsToDOM(settings);
   i18n.current = settings.lang || 'ar';
@@ -5676,29 +5506,17 @@ function bootstrap() {
   const langLabel = $('#langLabel');
   if (langLabel) langLabel.textContent = i18n.current === 'ar' ? 'EN' : 'AR';
 
-  // 2. تطبيق الترجمات على القشرة
   i18n.applyToDOM();
-
-  // 3. ربط أحداث القشرة (sidebar, drawer, language, etc.)
   initShellEvents();
 
-  // 4. تحذير التخزين
   if (!Storage.available()) {
     showToast(t('error.storageUnavailable'), 'warn', 6000);
   }
 
-  // 5. إغلاق أي مسودة قديمة في Code Studio إذا لم تكن هناك تغييرات
-  // (اختياري — نتركها حتى يزور المستخدم الصفحة)
-
-  // 6. بدء الراوتر
   Router.start();
 
-  // 7. الاستماع لتغيرات اللغة (إعادة رندر)
-  State.on('lang:changed', () => {
-    // Router.refresh() يتم داخلياً في setLang
-  });
+  State.on('lang:changed', () => {});
 
-  // 8. رسالة ودّية في console
   try {
     console.log(
       '%cNexSec AI v1.0%c — Frontend-First\nAI: Not Connected · No backend · Local only',
@@ -5708,11 +5526,11 @@ function bootstrap() {
   } catch {}
 }
 
-// تشغيل عند تحميل DOM
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', bootstrap);
 } else {
   bootstrap();
 }
-
-/* ═══════════════════════════════════════════════════════════════
+</script>
+</body>
+</html>
