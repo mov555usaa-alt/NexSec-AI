@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10b981">
-<meta name="description" content="NexSec AI — Your Cybersecurity Development Workspace. Frontend-first, offline, honest about disabled integrations.">
-<meta name="application-name" content="NexSec AI">
-<title>NexSec AI — مساحة عمل تطوير الأمن السيبراني</title>
+<meta name="description" content="ApexSec — Your Cybersecurity Development Workspace. Frontend-first, offline, honest about disabled integrations.">
+<meta name="application-name" content="ApexSec">
+<title>ApexSec — مساحة عمل تطوير الأمن السيبراني</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0e12'/%3E%3Cpath d='M32 8 L52 16 L52 32 C52 44 42 54 32 58 C22 54 12 44 12 32 L12 16 Z' fill='none' stroke='%2310b981' stroke-width='3'/%3E%3Ccircle cx='32' cy='31' r='4' fill='%2334d399'/%3E%3C/svg%3E">
 <style>
 /* ═══════════════════════════════════════════════════════════════
@@ -474,7 +474,8 @@ html[dir="rtl"] .select{background-position:left var(--s-3) center}
 .toast__close{margin-inline-start:auto;color:inherit;opacity:.7;padding:0 4px;font-size:16px;line-height:1}
 .toast__close:hover{opacity:1}
 @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
-html[dir="rtl"] @keyframes toastIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+@keyframes toastInRtl{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+html[dir="rtl"] .toast{animation-name:toastInRtl}
 
 /* ─────────── MODAL ─────────── */
 .modal-back{
@@ -679,6 +680,50 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
 *::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:var(--r-full)}
 *::-webkit-scrollbar-thumb:hover{background:var(--text-4)}
 *::-webkit-scrollbar-track{background:transparent}
+
+
+/* ─────────── MOBILE BOTTOM NAV ─────────── */
+.mobile-bottom-nav{display:none}
+@media(max-width:960px){
+  body{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+  .mobile-bottom-nav{
+    position:fixed;inset-inline:0;bottom:0;z-index:60;
+    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+    background:color-mix(in srgb,var(--bg-panel) 94%,transparent);
+    border-top:1px solid var(--border);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)
+  }
+  .mobile-bottom-nav__link{
+    min-width:0;min-height:48px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;
+    border-radius:var(--r-md);color:var(--text-2);
+    font-size:11px;line-height:1.2;text-align:center
+  }
+  .mobile-bottom-nav__link svg{width:20px;height:20px;flex-shrink:0}
+  .mobile-bottom-nav__link:hover,.mobile-bottom-nav__link[aria-current="page"]{
+    color:var(--accent);background:var(--accent-soft)
+  }
+  .app-main{padding-bottom:calc(var(--s-4) + 8px)}
+}
+@media(min-width:961px){.mobile-bottom-nav{display:none!important}}
+</style>
+<style id="nexsec-pro-polish">
+:root{--pro-accent:#34d399;--pro-accent-2:#06b6d4;--pro-glow:rgba(16,185,129,.18)}
+body{scroll-behavior:smooth}
+button,.btn,a[role="button"],input,select,textarea{transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+button:hover,.btn:hover{filter:brightness(1.08)}
+button:focus-visible,.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--pro-accent);outline-offset:3px}
+.card,.panel,.stat-card,.tool-card,.feature-card{border-radius:16px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.card:hover,.panel:hover,.stat-card:hover,.tool-card:hover,.feature-card:hover{border-color:rgba(52,211,153,.35);box-shadow:0 12px 32px var(--pro-glow)}
+::selection{background:rgba(52,211,153,.28)}
+.pro-command-overlay{position:fixed;inset:0;background:rgba(2,6,23,.72);backdrop-filter:blur(8px);z-index:99999;display:none;align-items:flex-start;justify-content:center;padding:12vh 18px 20px}
+.pro-command-overlay.open{display:flex}.pro-command-box{width:min(620px,100%);background:var(--bg-card,#111827);color:var(--text-primary,#f8fafc);border:1px solid rgba(148,163,184,.3);border-radius:18px;overflow:hidden;box-shadow:0 30px 100px rgba(0,0,0,.45)}
+.pro-command-box input{width:100%;box-sizing:border-box;padding:17px 18px;background:transparent;color:inherit;border:0;border-bottom:1px solid rgba(148,163,184,.22);font:inherit;outline:none}
+.pro-command-list{padding:8px;max-height:50vh;overflow:auto}.pro-command-item{display:flex;width:100%;text-align:right;gap:12px;align-items:center;padding:12px;border:0;border-radius:10px;background:transparent;color:inherit;cursor:pointer}.pro-command-item:hover{background:rgba(52,211,153,.12)}.pro-command-hint{padding:10px 14px;color:#94a3b8;font-size:12px;border-top:1px solid rgba(148,163,184,.15)}
+.pro-toast{position:fixed;bottom:22px;left:22px;z-index:100000;padding:12px 16px;background:#064e3b;color:#ecfdf5;border:1px solid #34d399;border-radius:12px;box-shadow:0 10px 35px #0004;max-width:min(420px,calc(100vw - 44px));font-size:14px}
+@media(max-width:640px){.pro-command-overlay{padding-top:7vh}.pro-command-box{border-radius:14px}.pro-toast{left:12px;right:12px;bottom:12px;max-width:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
 </head>
 <body data-sidebar="expanded" data-drawer="closed">
@@ -693,20 +738,20 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
     </svg>
   </button>
 
-  <a href="#/dashboard" class="brand" aria-label="NexSec AI — الصفحة الرئيسية">
+  <a href="#/dashboard" class="brand" aria-label="ApexSec — الصفحة الرئيسية">
     <svg class="brand__logo" viewBox="0 0 64 64" aria-hidden="true">
       <rect width="64" height="64" rx="14" fill="#0a0e12"/>
       <path d="M32 8 L52 16 L52 32 C52 44 42 54 32 58 C22 54 12 44 12 32 L12 16 Z" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round"/>
       <polygon points="32,20 42,25.5 42,37 32,42.5 22,37 22,25.5" fill="none" stroke="#34d399" stroke-width="1.8" stroke-linejoin="round"/>
       <circle cx="32" cy="31.5" r="3" fill="#34d399"/>
     </svg>
-    <span class="brand__name">NexSec AI</span>
+    <span class="brand__name">ApexSec</span>
     <span class="brand__ver" aria-label="version">v1.0</span>
   </a>
 
   <div class="spacer"></div>
 
-  <span class="hdr-status hide-mobile" title="حالة الاتصال بمزوّد الذكاء الاصطناعي" role="status">
+  <span class="hdr-status hide-mobile" id="aiStatusBadge" title="حالة الاتصال بمزوّد الذكاء الاصطناعي" role="status">
     <span class="hdr-status__dot hdr-status__dot--off" aria-hidden="true"></span>
     <span data-i18n="status.ai">AI: غير متصل</span>
   </span>
@@ -830,7 +875,7 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
   <div class="spacer"></div>
 
   <div class="hide-desktop" style="padding:var(--s-3) var(--s-2);font-size:var(--fs-xs);color:var(--text-3);border-top:1px solid var(--border);margin-top:var(--s-3)">
-    <div style="font-weight:600;color:var(--text-2)">NexSec AI</div>
+    <div style="font-weight:600;color:var(--text-2)">ApexSec</div>
     <div data-i18n="app.version">الإصدار 1.0 — Frontend-First</div>
   </div>
 </nav>
@@ -858,6 +903,26 @@ mark{background:var(--accent-soft);color:var(--accent);padding:0 2px;border-radi
 <!-- ═══════════════════════════════════════════════════════════════
      JAVASCRIPT
      ═══════════════════════════════════════════════════════════════ -->
+
+<nav class="mobile-bottom-nav" aria-label="التنقل السفلي">
+  <a class="mobile-bottom-nav__link" href="#/dashboard" data-route="dashboard" aria-label="الرئيسية">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+    <span>الرئيسية</span>
+  </a>
+  <a class="mobile-bottom-nav__link" href="#/chat" data-route="chat" aria-label="المحادثة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>المحادثة</span>
+  </a>
+  <a class="mobile-bottom-nav__link" href="#/code-studio" data-route="code-studio" aria-label="استوديو الكود">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    <span>الكود</span>
+  </a>
+  <a class="mobile-bottom-nav__link" href="#/settings" data-route="settings" aria-label="الإعدادات">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/></svg>
+    <span>الإعدادات</span>
+  </a>
+</nav>
+
 <script>
 'use strict';
 
@@ -1082,8 +1147,7 @@ const Storage = (() => {
         return true;
       } catch (err) {
         if (err && (err.name === 'QuotaExceededError' || err.code === 22)) {
-          console.warn('NexSec: تخزين ممتلئ — تم تجاهل الحفظ.');
-          return false;
+          console.warn('NexSec: التخزين المحلي ممتلئ — سيُحفظ التغيير مؤقتاً في الذاكرة.');
         }
       }
     }
@@ -1176,7 +1240,7 @@ const Storage = (() => {
 const I18N = {
   ar: {
     /* App */
-    'app.name': 'NexSec AI',
+    'app.name': 'ApexSec',
     'app.tagline': 'مساحة عمل تطوير الأمن السيبراني',
     'app.version': 'الإصدار 1.0 — Frontend-First',
 
@@ -1294,7 +1358,7 @@ const I18N = {
     'error.generic': 'حدث خطأ غير متوقع',
     'error.notFound': 'الصفحة غير موجودة',
     'error.notFoundDesc': 'تحقق من العنوان أو عد إلى لوحة التحكم',
-    'error.invalidFile': 'ملف غير صالح — تأكد أنه تصدير NexSec AI',
+    'error.invalidFile': 'ملف غير صالح — تأكد أنه تصدير ApexSec',
     'error.required': 'هذا الحقل مطلوب',
     'error.tooShort': 'النص قصير جداً',
     'error.tooLong': 'النص طويل جداً',
@@ -1342,7 +1406,7 @@ const I18N = {
 
     /* Dashboard */
     'dashboard.title': 'لوحة التحكم',
-    'dashboard.welcome': 'مرحباً بك في NexSec AI',
+    'dashboard.welcome': 'مرحباً بك في ApexSec',
     'dashboard.subtitle': 'مساحة عمل تطوير الأمن السيبراني',
     'dashboard.projects': 'المشاريع',
     'dashboard.scripts': 'السكربتات',
@@ -1468,7 +1532,7 @@ const I18N = {
     'repos.noLocal': 'لا توجد مستودعات محلية — استورد قائمة JSON أو استخدم زر GitHub',
 
     /* About */
-    'about.title': 'حول NexSec AI',
+    'about.title': 'حول ApexSec',
     'about.version': 'الإصدار',
     'about.tagline': 'مساحة عمل تطوير الأمن السيبراني',
     'about.description': 'تطبيق أمامي كامل لتنظيم مشاريع الأمن السيبراني، حفظ السكربتات، وكتابة التقارير — يعمل بالكامل من متصفحك.',
@@ -1489,7 +1553,7 @@ const I18N = {
 
   en: {
     /* App */
-    'app.name': 'NexSec AI',
+    'app.name': 'ApexSec',
     'app.tagline': 'Your Cybersecurity Development Workspace',
     'app.version': 'Version 1.0 — Frontend-First',
 
@@ -1607,7 +1671,7 @@ const I18N = {
     'error.generic': 'An unexpected error occurred',
     'error.notFound': 'Page not found',
     'error.notFoundDesc': 'Check the URL or return to Dashboard',
-    'error.invalidFile': 'Invalid file — ensure it is a NexSec AI export',
+    'error.invalidFile': 'Invalid file — ensure it is a ApexSec export',
     'error.required': 'This field is required',
     'error.tooShort': 'Text is too short',
     'error.tooLong': 'Text is too long',
@@ -1655,7 +1719,7 @@ const I18N = {
 
     /* Dashboard */
     'dashboard.title': 'Dashboard',
-    'dashboard.welcome': 'Welcome to NexSec AI',
+    'dashboard.welcome': 'Welcome to ApexSec',
     'dashboard.subtitle': 'Your Cybersecurity Development Workspace',
     'dashboard.projects': 'Projects',
     'dashboard.scripts': 'Scripts',
@@ -1781,7 +1845,7 @@ const I18N = {
     'repos.noLocal': 'No local repositories — import a JSON list or use GitHub button',
 
     /* About */
-    'about.title': 'About NexSec AI',
+    'about.title': 'About ApexSec',
     'about.version': 'Version',
     'about.tagline': 'Your Cybersecurity Development Workspace',
     'about.description': 'A complete frontend application for organizing cybersecurity projects, saving scripts, and writing reports — running entirely in your browser.',
@@ -2607,43 +2671,36 @@ GRANT SELECT, INSERT ON users TO app_role;
    ═══════════════════════════════════════════════════════════════ */
 
 const AIService = (() => {
-  const config = {
-    enabled: false,
-    endpoint: null,
-    model: null
-  };
+  const API_KEY = '1270263caae049e1a27563dc9b41591f.hpoMMV9ZXQAeAcZOxRJNp2g7'; // ضع مفتاح Ollama هنا
+  const API_URL = 'https://corsproxy.io/?https://ollama.com/api/chat';
+  const MODEL_NAME = 'gpt-oss:20b';
 
-  function isConnected() {
-    return config.enabled === true && !!config.endpoint;
-  }
-
-  function status() {
-    if (isConnected()) return { state: 'connected', label: t('status.ai') };
-    return { state: 'disconnected', label: t('status.ai'), reason: 'no_provider_configured' };
-  }
-
-  async function chat(_request) {
-    if (!isConnected()) {
-      return {
-        ok: false,
-        error: {
-          code: 'AI_NOT_CONNECTED',
-          message: t('error.aiUnavailableDesc')
-        }
-      };
-    }
-    return {
-      ok: false,
-      error: {
-        code: 'AI_NOT_IMPLEMENTED',
-        message: 'AI provider integration not implemented in v1.0'
+  async function chat(messages) {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          model: MODEL_NAME,
+          messages: (messages || []).map(({ role, content }) => ({ role, content })),
+          stream: false
+        })
+      });
+      if (!response.ok) throw new Error('فشل الاتصال بالخادم (' + response.status + ')');
+      const data = await response.json();
+      if (!data.message || typeof data.message.content !== 'string') {
+        throw new Error('استجابة غير صالحة من مزوّد الذكاء الاصطناعي');
       }
-    };
+      return { ok: true, content: data.message.content };
+    } catch (error) {
+      return { ok: false, error: { code: 'CONNECTION_FAILED', message: error.message || 'تعذر الاتصال بالخادم' } };
+    }
   }
 
-  function getConfig() { return { ...config }; }
-
-  return { isConnected, status, chat, getConfig };
+  return { chat };
 })();
 
 /* ═══════════════════════════════════════════════════════════════
@@ -3260,13 +3317,35 @@ function renderChat(main) {
       onClick: sendMessage
     }, icon('send', 16), document.createTextNode(' ' + t('chat.send')));
 
-    function sendMessage() {
+    async function sendMessage() {
       const text = textarea.value.trim();
       if (!text) return;
+
       const messages = [...(active.messages || [])];
       messages.push({ role: 'user', content: text, ts: Date.now() });
       updateConversation(active.id, { messages });
       textarea.value = '';
+      Router.refresh();
+
+      const msgsBox = document.querySelector('.chat-msgs');
+      let loadingMsg = null;
+      if (msgsBox) {
+        loadingMsg = document.createElement('div');
+        loadingMsg.className = 'chat-msg chat-msg-system';
+        loadingMsg.textContent = 'ApexSec يفكر...';
+        msgsBox.appendChild(loadingMsg);
+        msgsBox.scrollTop = msgsBox.scrollHeight;
+      }
+
+      const aiResponse = await AIService.chat(messages);
+
+      if (aiResponse.ok) {
+        messages.push({ role: 'assistant', content: aiResponse.content, ts: Date.now() });
+      } else {
+        messages.push({ role: 'system', content: 'خطأ: ' + aiResponse.error.message, ts: Date.now() });
+      }
+
+      updateConversation(active.id, { messages });
       Router.refresh();
     }
 
@@ -5339,7 +5418,7 @@ function renderSettings(main) {
   page.appendChild(danger);
 
   const versionRow = el('div', { class: 'row', style: { color: 'var(--text-3)', fontSize: 'var(--fs-xs)', justifyContent: 'center', paddingTop: 'var(--s-4)' } });
-  versionRow.textContent = `NexSec AI — ${t('app.version')}`;
+  versionRow.textContent = `ApexSec — ${t('app.version')}`;
   page.appendChild(versionRow);
 
   main.appendChild(page);
@@ -5388,7 +5467,7 @@ function renderAbout(main) {
   hero.appendChild(heroLogo);
 
   const heroBody = el('div', { class: 'hero__body' });
-  heroBody.appendChild(el('div', { class: 'hero__title', text: 'NexSec AI' }));
+  heroBody.appendChild(el('div', { class: 'hero__title', text: 'ApexSec' }));
   heroBody.appendChild(el('div', { class: 'hero__sub', text: t('about.description') }));
   const badges = el('div', { class: 'row', style: { marginTop: 'var(--s-2)' } });
   badges.appendChild(el('span', { class: 'badge', text: t('about.version') + ': 1.0' }));
@@ -5519,7 +5598,7 @@ function bootstrap() {
 
   try {
     console.log(
-      '%cNexSec AI v1.0%c — Frontend-First\nAI: Not Connected · No backend · Local only',
+      '%cApexSec v1.0%c — Frontend-First\nAI: Not Connected · No backend · Local only',
       'background:#10b981;color:#07110c;padding:4px 8px;border-radius:4px;font-weight:bold',
       'color:#8b97a5'
     );
@@ -5531,6 +5610,44 @@ if (document.readyState === 'loading') {
 } else {
   bootstrap();
 }
+</script>
+<script id="nexsec-pro-enhancements">
+(()=>{'use strict';
+const toast=(msg)=>{let n=document.querySelector('.pro-toast');if(!n){n=document.createElement('div');n.className='pro-toast';n.setAttribute('role','status');document.body.appendChild(n)}n.textContent=msg;n.hidden=false;clearTimeout(window.__nexsecToastTimer);window.__nexsecToastTimer=setTimeout(()=>{n.remove()},3200)};
+const overlay=document.createElement('div');overlay.className='pro-command-overlay';overlay.innerHTML='<div class="pro-command-box" role="dialog" aria-modal="true" aria-label="مركز الأوامر"><input type="search" placeholder="اكتب للبحث عن أمر…" aria-label="البحث عن أمر"><div class="pro-command-list"></div><div class="pro-command-hint">Enter للتنفيذ · Esc للإغلاق · Ctrl/⌘ + K للفتح</div></div>';document.body.appendChild(overlay);
+const input=overlay.querySelector('input'),list=overlay.querySelector('.pro-command-list');
+const actions=[
+ {label:'الانتقال إلى أعلى الصفحة',keywords:'home top الرئيسية',run:()=>window.scrollTo({top:0,behavior:'smooth'})},
+ {label:'الانتقال إلى أسفل الصفحة',keywords:'bottom footer نهاية',run:()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})},
+ {label:'تبديل المظهر الفاتح/الداكن',keywords:'theme dark light المظهر',run:()=>{let r=document.documentElement;let cur=r.getAttribute('data-theme')||'dark';let next=cur==='dark'?'light':'dark';r.setAttribute('data-theme',next);try{localStorage.setItem('nexsec-pro-theme',next)}catch(e){};toast('تم تبديل المظهر إلى '+(next==='dark'?'الداكن':'الفاتح'))}},
+ {label:'تصدير نسخة احتياطية من بيانات الصفحة',keywords:'export backup backup json تصدير',run:()=>{try{let data={app:'ApexSec',exportedAt:new Date().toISOString(),localStorage:{}};for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);data.localStorage[k]=localStorage.getItem(k)}let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nexsec-ai-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('تم تجهيز النسخة الاحتياطية')}catch(e){toast('تعذر تصدير النسخة الاحتياطية')}}},
+ {label:'استيراد نسخة احتياطية',keywords:'import restore backup استيراد',run:()=>{let f=document.createElement('input');f.type='file';f.accept='.json,application/json';f.onchange=async()=>{let file=f.files&&f.files[0];if(!file)return;try{let data=JSON.parse(await file.text());let values=data.localStorage;if(!values||typeof values!=='object'||Array.isArray(values))throw new Error('invalid');if(!confirm('سيتم دمج بيانات النسخة الاحتياطية مع البيانات الحالية. هل تريد المتابعة؟'))return;for(let [k,v] of Object.entries(values)){if(typeof v==='string')localStorage.setItem(k,v)}toast('تم استيراد البيانات. أعد تحميل الصفحة إذا لزم الأمر.')}catch(e){toast('الملف غير صالح أو تعذر قراءته')}};f.click()}},
+ {label:'عرض معلومات حول مركز الأوامر',keywords:'help مساعدة about',run:()=>toast('افتح مركز الأوامر باستخدام Ctrl/⌘ + K، ثم ابحث عن الأمر المطلوب.')}
+];
+function render(q=''){list.innerHTML='';let matches=actions.filter(a=>(a.label+' '+a.keywords).toLowerCase().includes(q.toLowerCase()));if(!matches.length){list.innerHTML='<div style="padding:18px;color:#94a3b8">لا توجد أوامر مطابقة.</div>';return}for(const a of matches){let b=document.createElement('button');b.type='button';b.className='pro-command-item';b.textContent='⌘  '+a.label;b.addEventListener('click',()=>{close();a.run()});list.appendChild(b)}}
+function open(){overlay.classList.add('open');input.value='';render();setTimeout(()=>input.focus(),30)}function close(){overlay.classList.remove('open')}
+input.addEventListener('input',()=>render(input.value));input.addEventListener('keydown',e=>{if(e.key==='Enter'){let b=list.querySelector('button');if(b)b.click()}if(e.key==='Escape')close()});overlay.addEventListener('click',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open()}if(e.key==='Escape')close()});
+try{let saved=localStorage.getItem('nexsec-pro-theme');if(saved&&!document.documentElement.getAttribute('data-theme'))document.documentElement.setAttribute('data-theme',saved)}catch(e){}
+})();
+
+function updateAIStatus() {
+  const badge = document.getElementById('aiStatusBadge');
+  if (!badge) return;
+  const dot = badge.querySelector('.hdr-status__dot');
+  const text = badge.querySelector('span[data-i18n="status.ai"]');
+  if (!dot || !text) return;
+  if (navigator.onLine) {
+    dot.className = 'hdr-status__dot hdr-status__dot--on';
+    text.textContent = 'AI: متصل';
+  } else {
+    dot.className = 'hdr-status__dot hdr-status__dot--off';
+    text.textContent = 'AI: غير متصل';
+  }
+}
+window.addEventListener('online', updateAIStatus);
+window.addEventListener('offline', updateAIStatus);
+document.addEventListener('DOMContentLoaded', updateAIStatus);
+updateAIStatus();
 </script>
 </body>
 </html>
